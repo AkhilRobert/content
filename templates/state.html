@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>{{state}}</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href={{url_for('static', filename='state.css')}}>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+      }
+
+      #container {
+        width: 100%;
+        height: 100vh;
+      }
+    </style>
+  </head>
+  <body class="container">
+    <canvas id="yearChart"></canvas>
+    <canvas id="genderChart"></canvas>
+  </body>
+
+  <script>
+    (async () => {
+      const yearChart = document.getElementById("yearChart");
+      const genderChart = document.getElementById("genderChart");
+
+      const yearData = await fetch(
+        "http://localhost:4000/api/by-year/{{state}}"
+      ).then((response) => response.json());
+
+      const genderData = await fetch(
+        "http://localhost:4000/api/by-gender/{{state}}"
+      ).then((response) => response.json());
+
+      console.log(genderData);
+
+      new Chart(yearChart, {
+        type: "line",
+        data: {
+          labels: yearData.map((v) => v._id.Year),
+          datasets: [
+            {
+              label: "Number of cases per year",
+              data: yearData.map((v) => v.count),
+              borderWidth: 3,
+            },
+          ],
+        },
+        options: {
+          scales: {
+            y: {
+              beginAtZero: true,
+            },
+          },
+        },
+      });
+
+      new Chart(genderChart, {
+        type: "pie",
+        data: {
+          labels: genderData.map((v) => v._id.Gender),
+          datasets: [
+            {
+              label: "# of Votes",
+              data: genderData.map((v) => v.count),
+              borderWidth: 1,
+            },
+          ],
+        },
+        options: {
+          scales: {
+            y: {
+              beginAtZero: true,
+            },
+          },
+        },
+      });
+    })();
+  </script>
+</html>
