@@ -32,7 +32,10 @@
 
         Highcharts.mapChart("container", {
           title: {
-            text: null,
+            text: "Suicide Rate in India",
+          },
+          chart: {
+            styledMode: false,
           },
           mapNavigation: {
             enabled: true,
@@ -42,9 +45,20 @@
           },
           colorAxis: {
             min: 1,
-            max: 1_200_000,
+            max: 1_301_200,
             type: "logarithmic",
+            stops: [
+              // b30000	a10000	8f0000	7d0000	6b0000	5a0000
+              [0, "#d98080"],
+              [0.166, "#ca4d4d"],
+              [0.166 * 2, "#b30000"],
+              [0.166 * 3, "#ca4d4d"],
+              [0.166 * 4, "#bb1a1a"],
+              [0.166 * 5, "#b30000"],
+              [1, "#8f0000"],
+            ],
           },
+          colors: [],
           series: [
             {
               mapData,

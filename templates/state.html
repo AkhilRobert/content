@@ -36,7 +36,15 @@
     <canvas id="ageGroupChart"></canvas>
 
     <div>
-      <h1>This is the prediction</h1>
+      <h1>Predictor</h1>
+      <form class="form" id="form">
+        <input />
+        <div>
+          <label>age</label>
+          <input type="number" />
+        </div>
+        <button type="submit">Predict</button>
+      </form>
     </div>
   </body>
 
@@ -155,5 +163,14 @@
         },
       });
     })();
+  </script>
+
+  <script>
+    const form = document.getElementById("form");
+
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      console.log("Hello world !!");
+    });
   </script>
 </html>
