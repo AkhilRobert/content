@@ -162,10 +162,35 @@ def get_by_gender(state: str):
 def get_by_education_status(state: str):
     data = collection.aggregate(
         [
-            {"$match": {"State": html.unescape(state)}},
+            {
+                "$match": {
+                    "State": html.unescape(state),
+                    "Type_code": "Professional_Profile",
+                },
+            },
             {
                 "$group": {
-                    "_id": {"Gender": "$Gender"},
+                    "_id": {"cause": "$Type"},
+                    "count": {"$sum": "$Total"},
+                },
+            },
+        ]
+    )
+    return json_util.dumps(data)
+
+
+@app.route("/api/by-age/<string:state>")
+def get_by_age_group(state: str):
+    data = collection.aggregate(
+        [
+            {
+                "$match": {
+                    "State": html.unescape(state),
+                },
+            },
+            {
+                "$group": {
+                    "_id": {"Age_group": "$Age_group"},
                     "count": {"$sum": "$Total"},
                 },
             },

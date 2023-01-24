@@ -7,6 +7,12 @@
     <title>{{state}}</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href={{url_for('static', filename='state.css')}}>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;400&display=swap"
+      rel="stylesheet"
+    />
     <style>
       * {
         margin: 0;
@@ -17,27 +23,34 @@
         width: 100%;
         height: 100vh;
       }
+
+      body {
+        font-family: "Poppins", sans-serif;
+      }
     </style>
   </head>
   <body class="container">
     <canvas id="yearChart"></canvas>
     <canvas id="genderChart"></canvas>
+    <canvas id="professionalChart"></canvas>
+    <canvas id="ageGroupChart"></canvas>
+
+    <div>
+      <h1>This is the prediction</h1>
+    </div>
   </body>
 
   <script>
     (async () => {
       const yearChart = document.getElementById("yearChart");
       const genderChart = document.getElementById("genderChart");
+      const professionalChart = document.getElementById("professionalChart");
+      const ageGroupChart = document.getElementById("ageGroupChart");
 
+      // Year
       const yearData = await fetch(
         "http://localhost:4000/api/by-year/{{state}}"
       ).then((response) => response.json());
-
-      const genderData = await fetch(
-        "http://localhost:4000/api/by-gender/{{state}}"
-      ).then((response) => response.json());
-
-      console.log(genderData);
 
       new Chart(yearChart, {
         type: "line",
@@ -45,7 +58,7 @@
           labels: yearData.map((v) => v._id.Year),
           datasets: [
             {
-              label: "Number of cases per year",
+              label: "Number of cases ",
               data: yearData.map((v) => v.count),
               borderWidth: 3,
             },
@@ -60,14 +73,75 @@
         },
       });
 
+      // Gender
+      const genderData = await fetch(
+        "http://localhost:4000/api/by-gender/{{state}}"
+      ).then((response) => response.json());
+
       new Chart(genderChart, {
         type: "pie",
         data: {
           labels: genderData.map((v) => v._id.Gender),
           datasets: [
             {
-              label: "# of Votes",
+              label: "Number of cases ",
               data: genderData.map((v) => v.count),
+              borderWidth: 1,
+            },
+          ],
+        },
+        options: {
+          scales: {
+            y: {
+              beginAtZero: true,
+            },
+          },
+        },
+      });
+
+      // Professional
+      const professionalData = await fetch(
+        "http://localhost:4000/api/by-education/{{state}}"
+      ).then((response) => response.json());
+
+      new Chart(professionalChart, {
+        type: "bar",
+        data: {
+          labels: professionalData.map((v) => v._id.cause),
+          datasets: [
+            {
+              label: "Number of cases ",
+              data: professionalData.map((v) => v.count),
+              borderWidth: 1,
+            },
+          ],
+        },
+        options: {
+          scales: {
+            y: {
+              beginAtZero: true,
+            },
+          },
+        },
+      });
+
+      // Age group
+      const ageGroupData = await fetch(
+        "http://localhost:4000/api/by-age/{{state}}"
+      ).then((response) => response.json());
+
+      new Chart(ageGroupChart, {
+        type: "polarArea",
+        data: {
+          labels: ageGroupData
+            .filter((v) => v._id.Age_group !== "0-100+")
+            .map((v) => v._id.Age_group),
+          datasets: [
+            {
+              label: "Number of cases ",
+              data: ageGroupData
+                .filter((v) => v._id.Age_group !== "0-100+")
+                .map((v) => v.count),
               borderWidth: 1,
             },
           ],
