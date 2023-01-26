@@ -40,8 +40,8 @@
           "https://code.highcharts.com/mapdata/countries/in/in-all.topo.json"
         ).then((response) => response.json());
 
-        const data = await fetch("http://localhost:4000/api/map").then(
-          (response) => response.json()
+        const data = await fetch("/api/map").then((response) =>
+          response.json()
         );
 
         Highcharts.mapChart("container", {

@@ -109,9 +109,9 @@
       const ageGroupChart = document.getElementById("ageGroupChart");
 
       // Year
-      const yearData = await fetch(
-        "http://localhost:4000/api/by-year/{{state}}"
-      ).then((response) => response.json());
+      const yearData = await fetch("/api/by-year/{{state}}").then((response) =>
+        response.json()
+      );
 
       new Chart(yearChart, {
         type: "line",
@@ -135,9 +135,9 @@
       });
 
       // Gender
-      const genderData = await fetch(
-        "http://localhost:4000/api/by-gender/{{state}}"
-      ).then((response) => response.json());
+      const genderData = await fetch("/api/by-gender/{{state}}").then(
+        (response) => response.json()
+      );
 
       new Chart(genderChart, {
         type: "pie",
@@ -161,9 +161,9 @@
       });
 
       // Professional
-      const professionalData = await fetch(
-        "http://localhost:4000/api/by-education/{{state}}"
-      ).then((response) => response.json());
+      const professionalData = await fetch("/api/by-education/{{state}}").then(
+        (response) => response.json()
+      );
 
       new Chart(professionalChart, {
         type: "bar",
@@ -187,9 +187,9 @@
       });
 
       // Age group
-      const ageGroupData = await fetch(
-        "http://localhost:4000/api/by-age/{{state}}"
-      ).then((response) => response.json());
+      const ageGroupData = await fetch("/api/by-age/{{state}}").then(
+        (response) => response.json()
+      );
 
       new Chart(ageGroupChart, {
         type: "polarArea",
