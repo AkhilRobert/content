@@ -13,6 +13,12 @@
       href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;400&display=swap"
       rel="stylesheet"
     />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+      crossorigin="anonymous"
+    />
     <style>
       * {
         margin: 0;
@@ -35,16 +41,48 @@
     <canvas id="professionalChart"></canvas>
     <canvas id="ageGroupChart"></canvas>
 
-    <div>
+    <div class="predictor">
       <h1>Predictor</h1>
       <form class="form" id="form">
-        <input />
-        <div>
-          <label>age</label>
-          <input type="number" />
+        <div class="p-item">
+          <label>Age</label>
+          <input id="f-age" class="form-control" type="number" />
         </div>
-        <button type="submit">Predict</button>
+        <div class="p-item">
+          <label>Profession</label>
+          <select id="f-prof" class="form-select">
+            <option value="Farming/Agriculture Activity">
+              Farming/Agriculture Activity
+            </option>
+            <option value="House Wife">House Wife</option>
+            <option value="Professional Activity">Professional Activity</option>
+            <option value="Public sector undertaking">
+              Public sector undertaking
+            </option>
+            <option value="Retired Person">Retired Person</option>
+            <option value="Self-employed">Self-employed</option>
+            <option value="Service (Government)">Service (Government)</option>
+            <option value="Service (Private)">Service (Private)</option>
+            <option value="Student">Student</option>
+            <option value="Unemployed">Unemployed</option>
+            <option value="Others">Others</option>
+          </select>
+        </div>
+
+        <div class="p-item">
+          <label> Gender </label>
+          <select id="f-gender" class="form-select">
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+          </select>
+        </div>
+
+        <button class="btn btn-primary" type="submit">Predict</button>
       </form>
+
+      <p id="result" class="result hidden">
+        The chance of committing suicide is 1%
+      </p>
     </div>
   </body>
 
@@ -168,9 +206,33 @@
   <script>
     const form = document.getElementById("form");
 
-    form.addEventListener("submit", (e) => {
+    const age = document.getElementById("f-age");
+    const profession = document.getElementById("f-prof");
+    const gender = document.getElementById("f-gender");
+
+    const result = document.getElementById("result");
+
+    form.addEventListener("submit", async (e) => {
       e.preventDefault();
-      console.log("Hello world !!");
+      if (!age.value || !profession.value || !gender.value) {
+        // TODO: show some error message
+        return;
+      }
+
+      const data = await fetch("/api/predict/{{state}}", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          profession: profession.value,
+          gender: gender.value,
+          age: age.value,
+        }),
+      }).then((response) => response.json());
+
+      result.innerText = `The chances of committing suicide is ${data.percentage} %`;
+      result.classList.remove("hidden");
     });
   </script>
 </html>

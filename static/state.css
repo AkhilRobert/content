@@ -14,5 +14,23 @@
   gap: 20px;
 }
 
-.button {
+.predictor {
+  width: 90%;
+}
+
+.p-item {
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+}
+
+.result {
+  padding: 20px 0;
+  max-width: 90%;
+  margin: auto;
+  text-align: center;
+}
+
+.hidden {
+  display: none;
 }
