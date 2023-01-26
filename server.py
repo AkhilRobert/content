@@ -244,7 +244,7 @@ def get_by_age_group(state: str):
 def get_prediction(state: str):
 
     if request.json is None:
-        return {"percentage": 1}
+        return {"percentage": 0}
 
     data = collection.aggregate(
         [

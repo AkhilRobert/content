@@ -34,3 +34,11 @@
 .hidden {
   display: none;
 }
+
+.chart {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 100%;
+  text-align: center;
+}
