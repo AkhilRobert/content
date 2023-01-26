@@ -1,21 +1,21 @@
-# FIXME: Change the collection name to valid one on deploy
 import html
 import math
+import os
 from typing import Union
 
 from bson import json_util
+from dotenv import load_dotenv
 from flask import Flask, render_template, request
-from flask_cors import CORS
 from flask_pymongo import PyMongo
 
+load_dotenv()
+
 app = Flask(__name__)
-app.config["MONGO_URI"] = "mongodb://localhost:27017/Testing"
+app.config["MONGO_URI"] = os.getenv("MONGO_URI")
 mongo = PyMongo(app)
 
-# TODO: Remove this while deploying
-CORS(app)
 
-collection = mongo.db.testing  # pyright: ignore
+collection = mongo.db.india  # pyright: ignore
 
 map = {
     "Puducherry": "in-py",

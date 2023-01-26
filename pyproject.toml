@@ -9,6 +9,7 @@ python = "^3.10"
 Flask = "^2.2.2"
 Flask-Cors = "^3.0.10"
 Flask-PyMongo = "^2.3.0"
+python-dotenv = "^0.21.1"
 
 [tool.poetry.dev-dependencies]
 
