@@ -6,6 +6,10 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>India</title>
     <script src="https://code.highcharts.com/maps/highmaps.js"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;400&display=swap"
+      rel="stylesheet"
+    />
     <style>
       * {
         margin: 0;
@@ -14,11 +18,21 @@
 
       #container {
         width: 100%;
+        height: calc(100% - 46.5px);
+      }
+
+      body {
+        font-family: "Poppins", sans-serif;
         height: 100vh;
+      }
+
+      .heading {
+        text-align: center;
       }
     </style>
   </head>
   <body>
+    <h1 class="heading">Suicide Rate from 2001 - 2012</h1>
     <div id="container"></div>
     <script type="text/javascript">
       (async () => {
@@ -32,7 +46,7 @@
 
         Highcharts.mapChart("container", {
           title: {
-            text: "Suicide Rate in India",
+            text: null,
           },
           chart: {
             styledMode: false,
