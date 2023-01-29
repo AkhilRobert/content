@@ -52,6 +52,11 @@
     </div>
 
     <div class="chart">
+      <h3>Cause wise suicide rate</h3>
+      <canvas id="causeChart"></canvas>
+    </div>
+
+    <div class="chart">
       <h3>Age wise suicide rate</h3>
       <canvas id="ageGroupChart"></canvas>
     </div>
@@ -107,6 +112,7 @@
       const genderChart = document.getElementById("genderChart");
       const professionalChart = document.getElementById("professionalChart");
       const ageGroupChart = document.getElementById("ageGroupChart");
+      const causeChart = document.getElementById("causeChart");
 
       // Year
       const yearData = await fetch("/api/by-year/{{state}}").then((response) =>
@@ -202,6 +208,44 @@
               label: "Number of cases ",
               data: ageGroupData
                 .filter((v) => v._id.Age_group !== "0-100+")
+                .map((v) => v.count),
+              borderWidth: 1,
+            },
+          ],
+        },
+        options: {
+          scales: {
+            y: {
+              beginAtZero: true,
+            },
+          },
+        },
+      });
+
+      const causeData = await fetch("/api/by-cause/{{state}}").then(
+        (response) => response.json()
+      );
+
+      new Chart(causeChart, {
+        type: "bar",
+        data: {
+          labels: causeData
+            .filter(
+              (v) =>
+                !v._id.cause.includes("Other Causes") ||
+                !v._id.cause.includes("Not known")
+            )
+            .map((v) => v._id.cause),
+          datasets: [
+            {
+              label: "Number of cases ",
+              data: causeData
+                .filter((v) => {
+                  return (
+                    !v._id.cause.includes("Other Causes") ||
+                    !v._id.cause.includes("Not known")
+                  );
+                })
                 .map((v) => v.count),
               borderWidth: 1,
             },

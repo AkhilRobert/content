@@ -197,13 +197,34 @@ def get_by_gender(state: str):
 
 
 @app.route("/api/by-education/<string:state>")
-def get_by_education_status(state: str):
+def get_by_profession(state: str):
     data = collection.aggregate(
         [
             {
                 "$match": {
                     "State": html.unescape(state),
                     "Type_code": "Professional_Profile",
+                },
+            },
+            {
+                "$group": {
+                    "_id": {"cause": "$Type"},
+                    "count": {"$sum": "$Total"},
+                },
+            },
+        ]
+    )
+    return json_util.dumps(data)
+
+
+@app.route("/api/by-cause/<string:state>")
+def get_by_cause(state: str):
+    data = collection.aggregate(
+        [
+            {
+                "$match": {
+                    "State": html.unescape(state),
+                    "Type_code": "Causes",
                 },
             },
             {
@@ -270,4 +291,4 @@ def get_prediction(state: str):
 
 
 if __name__ == "__main__":
-    app.run(port=4000)
+    app.run(port=4000, debug=True)
