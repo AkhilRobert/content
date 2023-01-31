@@ -10,6 +10,12 @@
       href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;400&display=swap"
       rel="stylesheet"
     />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+      crossorigin="anonymous"
+    />
     <style>
       * {
         margin: 0;
@@ -18,7 +24,7 @@
 
       #container {
         width: 100%;
-        height: calc(100% - 46.5px);
+        height: calc(100% - (46.5px + 70px));
       }
 
       body {
@@ -29,12 +35,70 @@
       .heading {
         text-align: center;
       }
+
+      .search_container {
+        display: flex;
+        height: 50px;
+        margin: 10px 10px;
+        gap: 20px;
+      }
     </style>
   </head>
   <body>
     <h1 class="heading">Suicide Rate from 2001 - 2012</h1>
+    <form id="form" class="search_container">
+      <select id="cause" class="form-select">
+        <option>All</option>
+        <option>unemployment</option>
+        <option>Physical Abuse (Rape/Incest Etc.)</option>
+        <option>Other Prolonged Illness</option>
+        <option>Cancellation/Non-Settlement of Marriage</option>
+        <option>Divorce</option>
+        <option>Ideological Causes/Hero Worshipping</option>
+        <option>Failure in Examination</option>
+        <option>Poverty</option>
+        <option>Dowry Dispute</option>
+        <option>Family Problems</option>
+        <option>Property Dispute</option>
+        <option>Other Causes (Please Specity)</option>
+        <option>Causes Not known</option>
+        <option>Illegitimate Pregnancy</option>
+        <option>Death of Dear Person</option>
+        <option>Paralysis</option>
+        <option>Suspected/Illicit Relation</option>
+        <option>Not having Children (Barrenness/Impotency</option>
+        <option>Love Affairs</option>
+        <option>Fall in Social Reputation</option>
+        <option>Bankruptcy or Sudden change in Economic Status</option>
+        <option>Drug Abuse/Addiction</option>
+        <option>Professional/Career Problem</option>
+        <option>Illness (Aids/STD)</option>
+        <option>Insanity/Mental Illness</option>
+        <option>Cancer</option>
+        <option>Not having Children(Barrenness/Impotency</option>
+      </select>
+
+      <select id="year" class="form-select">
+        <option>All</option>
+        <option>2001</option>
+        <option>2002</option>
+        <option>2003</option>
+        <option>2004</option>
+        <option>2005</option>
+        <option>2006</option>
+        <option>2007</option>
+        <option>2008</option>
+        <option>2009</option>
+        <option>2010</option>
+        <option>2011</option>
+        <option>2012</option>
+      </select>
+
+      <button class="btn btn-primary">Filter</button>
+    </form>
     <div id="container"></div>
     <script type="text/javascript">
+      let chart;
       (async () => {
         const mapData = await fetch(
           "https://code.highcharts.com/mapdata/countries/in/in-all.topo.json"
@@ -44,7 +108,7 @@
           response.json()
         );
 
-        Highcharts.mapChart("container", {
+        chart = Highcharts.mapChart("container", {
           title: {
             text: null,
           },
@@ -59,17 +123,24 @@
           },
           colorAxis: {
             min: 1,
-            max: 1_301_200,
+            max: 1_301_20,
             type: "logarithmic",
+            // stops: [
+            //   // b30000	a10000	8f0000	7d0000	6b0000	5a0000
+            //   [0, "#fffff"],
+            //   [0.166, "#ca4d4d"],
+            //   [0.166 * 2, "#b30000"],
+            //   [0.166 * 3, "#ca4d4d"],
+            //   [0.166 * 4, "#bb1a1a"],
+            //   [0.166 * 5, "#b30000"],
+            //   [1, "#8f0000"],
+            // ],
             stops: [
-              // b30000	a10000	8f0000	7d0000	6b0000	5a0000
-              [0, "#d98080"],
-              [0.166, "#ca4d4d"],
-              [0.166 * 2, "#b30000"],
-              [0.166 * 3, "#ca4d4d"],
-              [0.166 * 4, "#bb1a1a"],
-              [0.166 * 5, "#b30000"],
-              [1, "#8f0000"],
+              [0, "#7EAB55"],
+              [0.2, "#FFFE55"],
+              [0.4, "#F5C142"],
+              [0.6, "#DF8244"],
+              [1, "#B02418"],
             ],
           },
           colors: [],
@@ -80,7 +151,7 @@
               data,
               states: {
                 hover: {
-                  color: "#BADA55",
+                  color: "#1a90f0",
                 },
               },
               tooltip: {
@@ -98,6 +169,32 @@
           ],
         });
       })();
+
+      const year = document.getElementById("year");
+      const cause = document.getElementById("cause");
+      const form = document.getElementById("form");
+
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        if (!year.value || !cause.value) {
+          return;
+        }
+
+        const fetchedData = await fetch("/api/map", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            cause: cause.value,
+            year: year.value,
+          }),
+        }).then((response) => response.json());
+
+        chart.update({
+          series: [{ data: fetchedData }],
+        });
+      });
     </script>
   </body>
 </html>

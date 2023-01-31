@@ -112,7 +112,7 @@ def hello_world():
     return render_template("index.html")
 
 
-@app.route("/api/map")
+@app.route("/api/map", methods=("POST", "GET"))
 def total_count():
     """
     query : db.testing.aggregate([{$group: {_id: {State: "$State"}, count: {$sum: "$Total"}}}])
@@ -122,12 +122,38 @@ def total_count():
     Total data for the map view
     """
     formatted_states = []
-    states = collection.aggregate(
-        [{"$group": {"_id": {"State": "$State"}, "count": {"$sum": "$Total"}}}]
-    )
+    states = []
+    query = [
+        {
+            "$group": {
+                "_id": {"State": "$State"},
+                "count": {"$sum": "$Total"},
+            }
+        }
+    ]
+
+    if request.method == "GET":
+        states = collection.aggregate(query)
+    else:
+        if request.json is None:
+            print("Hello")
+            return {"message": "No filter provided"}
+
+        cause = request.json["cause"]
+        year = request.json["year"]
+
+        if cause.lower() == "all" and year.lower() == "all":
+            states = collection.aggregate(query)
+        elif cause.lower() == "all":
+            states = collection.aggregate([{"$match": {"Year": int(year)}}, *query])
+        elif year.lower() == "all":
+            states = collection.aggregate([{"$match": {"Type": cause}}, *query])
+        else:
+            states = collection.aggregate(
+                [{"$match": {"Type": cause, "Year": int(year)}}, *query]
+            )
+
     for s in states:
-        # Ignoring the extra data as we don't need them for the map :\
-        # TODO: find a better solution
         key = (
             get_key(s["_id"]["State"]) if get_key(s["_id"]["State"]) is not None else ""
         )
